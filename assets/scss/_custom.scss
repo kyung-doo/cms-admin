@@ -1,0 +1,12 @@
+// Here you can add other styles
+.app-header.navbar .navbar-brand {
+    background-image: url("~/admin/img/logo.png");
+}
+
+.form-label {
+    padding-right: 20px !important;
+}
+
+.app-header.navbar .nav-item .nav-link > .img-avatar {
+    width:35px;
+}
