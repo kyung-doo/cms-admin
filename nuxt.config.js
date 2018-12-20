@@ -57,13 +57,12 @@ module.exports = {
     'cookie-universal-nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/style-resources',
-    'bootstrap-vue/nuxt',
-    ['@nuxtjs/proxy', { pathRewrite: { '^/api' : '' } }]
+    'bootstrap-vue/nuxt'
   ],
 
-  proxy: [
-    'http://localhost:3000/api'
-  ],
+  axios: {
+    baseURL: process.env.ROOT_URL || 'http://localhost:3000/api'
+  },
 
   plugins: [
     '~/plugins/directives',
