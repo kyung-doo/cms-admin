@@ -10,8 +10,6 @@ const changeLoaderOptions = loaders => {
   }
 }
 
-const port = parseInt(process.env.PORT || 3000)
-
 module.exports = {
   /*
   ** Headers of the page
@@ -64,7 +62,7 @@ module.exports = {
   ],
 
   proxy: [
-    'http://localhost:'+ port +'/api'
+    'http://localhost:3000/api'
   ],
 
   plugins: [
