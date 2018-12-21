@@ -66,7 +66,7 @@ module.exports = {
   ],
 
   generate: {
-    dir: '../dist/backend/public/admin'
+    dir: '../backend/public/admin'
   },
   
   /*
