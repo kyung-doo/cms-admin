@@ -64,6 +64,10 @@ module.exports = {
     '~/plugins/settings',
     '~/plugins/utils'
   ],
+
+  generate: {
+    dir: '../dist/backend/public/admin'
+  },
   
   /*
   ** Build configuration

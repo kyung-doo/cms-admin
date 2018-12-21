@@ -13,6 +13,10 @@
           {{data.index + 1}}
         </template>
 
+        <template slot="index" slot-scope="data">
+          {{data.item.register_datetime = data.item.register_datetime.substr(0,10)}}
+        </template>
+
         <template slot="denied" slot-scope="data">
           {{data.item.denied ? '차단' : '승인'}}
         </template>
@@ -73,6 +77,7 @@ export default {
         { key: 'nickname', label: '닉네임' },
         { key: 'email', label: '이메일' },
         { key: 'point', label: '포인트' },
+        { key: 'register_datetime', label: '가입일' },
         { key: 'denied', label: '승인' }
       ]
     }
