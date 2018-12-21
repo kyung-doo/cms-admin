@@ -61,8 +61,7 @@ module.exports = {
   ],
 
   plugins: [
-    '~/plugins/config',
-    '~/plugins/directives',
+    '~/plugins/settings',
     '~/plugins/utils'
   ],
   
