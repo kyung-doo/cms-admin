@@ -12,13 +12,12 @@ import { createStore } from './store.js'
 
 /* Plugins */
 
-import nuxt_plugin_bootstrapvue_3d0d29bc from 'nuxt_plugin_bootstrapvue_3d0d29bc' // Source: ./bootstrap-vue.js
-import nuxt_plugin_axios_d2eba01a from 'nuxt_plugin_axios_d2eba01a' // Source: ./axios.js
-import nuxt_plugin_cookieuniversalnuxt_7883899b from 'nuxt_plugin_cookieuniversalnuxt_7883899b' // Source: ./cookie-universal-nuxt.js
-import nuxt_plugin_libmoduleplugind0167ce2_d791bc8e from 'nuxt_plugin_libmoduleplugind0167ce2_d791bc8e' // Source: ./lib.module.plugin.d0167ce2.js
+import nuxt_plugin_bootstrapvue_cc44da7e from 'nuxt_plugin_bootstrapvue_cc44da7e' // Source: ./bootstrap-vue.js
+import nuxt_plugin_axios_52036692 from 'nuxt_plugin_axios_52036692' // Source: ./axios.js
+import nuxt_plugin_cookieuniversalnuxt_1051a23a from 'nuxt_plugin_cookieuniversalnuxt_1051a23a' // Source: ./cookie-universal-nuxt.js
+import nuxt_plugin_libmoduleplugin8c2984e0_74b6e76b from 'nuxt_plugin_libmoduleplugin8c2984e0_74b6e76b' // Source: ./lib.module.plugin.8c2984e0.js
+import nuxt_plugin_config_7194a390 from 'nuxt_plugin_config_7194a390' // Source: ..\\plugins\\config
 import nuxt_plugin_directives_d0867c0c from 'nuxt_plugin_directives_d0867c0c' // Source: ..\\plugins\\directives
-import nuxt_plugin_uses_6a875c42 from 'nuxt_plugin_uses_6a875c42' // Source: ..\\plugins\\uses
-import nuxt_plugin_prototypes_37f13f87 from 'nuxt_plugin_prototypes_37f13f87' // Source: ..\\plugins\\prototypes
 import nuxt_plugin_utils_3336a20a from 'nuxt_plugin_utils_3336a20a' // Source: ..\\plugins\\utils
 
 // Component: <no-ssr>
@@ -158,13 +157,12 @@ async function createApp(ssrContext) {
 
   // Plugin execution
 
-  if (typeof nuxt_plugin_bootstrapvue_3d0d29bc === 'function') await nuxt_plugin_bootstrapvue_3d0d29bc(app.context, inject)
-  if (typeof nuxt_plugin_axios_d2eba01a === 'function') await nuxt_plugin_axios_d2eba01a(app.context, inject)
-  if (typeof nuxt_plugin_cookieuniversalnuxt_7883899b === 'function') await nuxt_plugin_cookieuniversalnuxt_7883899b(app.context, inject)
-  if (typeof nuxt_plugin_libmoduleplugind0167ce2_d791bc8e === 'function') await nuxt_plugin_libmoduleplugind0167ce2_d791bc8e(app.context, inject)
+  if (typeof nuxt_plugin_bootstrapvue_cc44da7e === 'function') await nuxt_plugin_bootstrapvue_cc44da7e(app.context, inject)
+  if (typeof nuxt_plugin_axios_52036692 === 'function') await nuxt_plugin_axios_52036692(app.context, inject)
+  if (typeof nuxt_plugin_cookieuniversalnuxt_1051a23a === 'function') await nuxt_plugin_cookieuniversalnuxt_1051a23a(app.context, inject)
+  if (typeof nuxt_plugin_libmoduleplugin8c2984e0_74b6e76b === 'function') await nuxt_plugin_libmoduleplugin8c2984e0_74b6e76b(app.context, inject)
+  if (typeof nuxt_plugin_config_7194a390 === 'function') await nuxt_plugin_config_7194a390(app.context, inject)
   if (typeof nuxt_plugin_directives_d0867c0c === 'function') await nuxt_plugin_directives_d0867c0c(app.context, inject)
-  if (typeof nuxt_plugin_uses_6a875c42 === 'function') await nuxt_plugin_uses_6a875c42(app.context, inject)
-  if (typeof nuxt_plugin_prototypes_37f13f87 === 'function') await nuxt_plugin_prototypes_37f13f87(app.context, inject)
   if (typeof nuxt_plugin_utils_3336a20a === 'function') await nuxt_plugin_utils_3336a20a(app.context, inject)
 
   // If server-side, wait for async component to be resolved first

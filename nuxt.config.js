@@ -60,15 +60,9 @@ module.exports = {
     'bootstrap-vue/nuxt'
   ],
 
-  axios: {
-    //baseURL: process.env.ROOT_URL || 'http://localhost:3000/api'
-    baseURL: 'https://hohomkd-cms.herokuapp.com'
-  },
-
   plugins: [
+    '~/plugins/config',
     '~/plugins/directives',
-    '~/plugins/uses',
-    '~/plugins/prototypes',
     '~/plugins/utils'
   ],
   
@@ -89,7 +83,7 @@ module.exports = {
     /*
     ** Run ESLint on save
     */
-    extend (config, { isDev, isClient }) {
+    extend (config, { app, isDev, isClient }) {
 
       if (isDev && isClient) {
         config.module.rules.push({
