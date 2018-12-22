@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { interopDefault } from './utils'
 
-const _23a70cdd = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages_login" */))
-const _2ef5e36c = () => interopDefault(import('..\\pages\\member\\index.vue' /* webpackChunkName: "pages_member_index" */))
-const _0b44c3f9 = () => interopDefault(import('..\\pages\\member\\write.vue' /* webpackChunkName: "pages_member_write" */))
-const _59ff69c6 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
+const _8ac645b4 = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages_login" */))
+const _3ac14a96 = () => interopDefault(import('..\\pages\\member\\index.vue' /* webpackChunkName: "pages_member_index" */))
+const _8223897c = () => interopDefault(import('..\\pages\\member\\write.vue' /* webpackChunkName: "pages_member_write" */))
+const _1e158be2 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
 
@@ -66,19 +66,19 @@ export function createRouter() {
 
     routes: [{
       path: "/login",
-      component: _23a70cdd,
+      component: _8ac645b4,
       name: "login"
     }, {
       path: "/member",
-      component: _2ef5e36c,
+      component: _3ac14a96,
       name: "member"
     }, {
       path: "/member/write",
-      component: _0b44c3f9,
+      component: _8223897c,
       name: "member-write"
     }, {
       path: "/",
-      component: _59ff69c6,
+      component: _1e158be2,
       name: "index"
     }],
 

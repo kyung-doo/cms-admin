@@ -334,7 +334,7 @@
 
 import { ObjectUtils, StringUtils } from '~/plugins/utils'
 import { ko } from '~/plugins/datePickerLocale/'
-import DaumPostcode from '~/components/member/DaumPostcode'
+import DaumPostcode from '~/components/helper/DaumPostcode'
 import Datepicker from 'vuejs-datepicker'
 import { validationMixin } from 'vuelidate'
 import { required, minLength, maxLength, between, sameAs, integer, email } from 'vuelidate/lib/validators'
@@ -442,7 +442,7 @@ export default {
 
       deniedOption: [
         { value: false, text: '승인', selected: true},
-        { value: true, text: '차단', selected: true}
+        { value: true, text: '차단' }
       ],
 
       daumPostcode: null,
