@@ -11,7 +11,7 @@
         :items="$store.state.members">
         
         <template slot="index" slot-scope="data">
-          {{data.index + 1}}
+          {{ ($store.state.membersCount - (viewNum * (currentPage-1))) - data.index }}
         </template>
 
          <template slot="userid" slot-scope="data">
@@ -34,6 +34,15 @@
         </template>
 
       </b-table>
+      
+      <b-pagination 
+        size="md" 
+        align="center"
+        :total-rows="$store.state.membersCount" 
+        v-model="currentPage" 
+        :per-page="viewNum"
+        :hide-ellipsis=true
+        @input="pagenationChange" />
 
       <ListViewNum
         @change="listViewNmChange" />
@@ -66,11 +75,12 @@ export default {
       }
 
       await store.dispatch({type:'getMembersCount'})
-
-      await store.dispatch({type:'getMembers', viewNum: 10})
+      await store.dispatch({type:'getMembers', page:1, viewNum: 10})
 
     } 
-    catch ( e ){} 
+    catch ( e ){
+      console.log( e )
+    } 
     
   },
 
@@ -93,8 +103,7 @@ export default {
       ],
 
       viewNum: 10,
-      currenPage: 1,
-      totalPages: 1
+      currentPage: 1
     }
   },
 
@@ -104,8 +113,23 @@ export default {
 
   methods: {
 
-    listViewNmChange ( val ) {
+    async listViewNmChange ( val ) {
       this.viewNum = val
+      this.currentPage = 1
+
+      try {
+        await this.$store.dispatch({type:'getMembers', page:this.currentPage, viewNum:this.viewNum})
+      } catch( e ) {
+        console.log( e )
+      }
+    },
+
+    async pagenationChange () {
+      try {
+        await this.$store.dispatch({type:'getMembers', page:this.currentPage, viewNum:this.viewNum})
+      } catch( e ) {
+        console.log( e )
+      }
     }
   }
 }

@@ -110,13 +110,14 @@ const createStore = () => {
         }
       },
 
-      async getMembers ({ commit }, { viewNum }) {
+      async getMembers ({ commit }, { page, viewNum }) {
         try {
           
           const res = await this.$axios({
             method: 'get',
             url: '/api/admin/member/',
             params: {
+              page: page,
               viewNum: viewNum
             },
             headers: { 
