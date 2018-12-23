@@ -1,7 +1,7 @@
 <template>
       <b-nav-item-dropdown right no-caret>
         <template slot="button-content">
-          <img v-if="$store.state.photo" :src="$uploadUrl+$store.state.admin.photo" class="img-avatar" />
+          <img v-if="$store.state.admin.photo" :src="$uploadUrl+$store.state.admin.photo" class="img-avatar" />
           <img v-else src="~static/img/avatars/6.jpg" class="img-avatar" />
         </template>
         <!-- <b-dropdown-header tag="div" class="text-center"><strong>Account</strong></b-dropdown-header> -->

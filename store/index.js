@@ -67,10 +67,10 @@ const createStore = () => {
             }
 
             commit('setAuth', auth)
-            commit('setAdmin', { photo: res.data.body })
+            commit('setAdmin', { photo: res.data.body.photo })
 
             this.$cookies.set('auth', auth)
-            this.$cookies.set('admin',  { photo: res.data.body })
+            this.$cookies.set('admin',  { photo: res.data.body.photo })
           }
           else
           {
