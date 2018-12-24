@@ -13,13 +13,21 @@
 export default {
 
     props: {
-        options: null
+        options: {
+            type: Object,
+            default: null
+        },
+
+        selected: {
+            type: Number,
+            default: 10
+        }
     },
 
     data () {
         return {
             defaultOptions: [
-                { value: 10, text: '10', selected: true },
+                { value: 10, text: '10' },
                 { value: 15, text: '15' },
                 { value: 20, text: '20' },
                 { value: 25, text: '25' },
@@ -30,7 +38,7 @@ export default {
                 { value: 70, text: '70' },
                 { value: 100, text: '100' }
             ],
-            selectVal: this.options ? this.options[0].value : 10
+            selectVal: this.selected
         }
     },
 

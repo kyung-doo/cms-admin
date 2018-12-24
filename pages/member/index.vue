@@ -11,7 +11,7 @@
         :items="$store.state.members">
         
         <template slot="index" slot-scope="data">
-          {{ ($store.state.membersCount - (viewNum * (currentPage-1))) - data.index }}
+          {{ ($store.state.membersCount - (viewNum * (page-1))) - data.index }}
         </template>
 
          <template slot="userid" slot-scope="data">
@@ -38,13 +38,15 @@
       <b-pagination 
         size="md" 
         align="center"
-        :total-rows="$store.state.membersCount" 
-        v-model="currentPage" 
-        :per-page="viewNum"
+        :total-rows="$store.state.membersCount"  
+        :per-page="parseInt(viewNum)"
         :hide-ellipsis=true
+        :value="parseInt(page)"
+        :limit="10"
         @input="pagenationChange" />
 
       <ListViewNum
+        :selected="parseInt(viewNum)"
         @change="listViewNmChange" />
 
       <div class="align-right">
@@ -64,10 +66,9 @@ export default {
   
   layout: 'default',
   
-  async fetch ({ app, store, redirect, params }) {
+  async fetch ({ app, store, redirect, query }) {
 
     try {
-
       await store.dispatch({type:'cookieInit'})
 
       if(!store.state.auth) {
@@ -75,7 +76,7 @@ export default {
       }
 
       await store.dispatch({type:'getMembersCount'})
-      await store.dispatch({type:'getMembers', page:1, viewNum: 10})
+      await store.dispatch({type:'getMembers', page:query.page || 1, viewNum: query.viewNum || 10})
 
     } 
     catch ( e ){
@@ -84,12 +85,16 @@ export default {
     
   },
 
+  watchQuery: ['page', 'viewNum'],
+
   components: {
     ListViewNum
   },
 
   data () {
     return {
+      page : this.$route.query.page|| 1,
+      viewNum : this.$route.query.viewNum || 10,
       tableFields: [
         { key: 'index', label: '번호' },
         { key: 'userid', label: '아이디' },
@@ -100,48 +105,45 @@ export default {
         { key: 'register_datetime', label: '가입일' },
         { key: 'check_recive', label: '공개/메일/쪽지/문자' },
         { key: 'denied', label: '승인' }
-      ],
-
-      viewNum: 10,
-      currentPage: 1
+      ]
     }
-  },
-
-  mounted () {
-    
   },
 
   methods: {
 
-    async listViewNmChange ( val ) {
+    listViewNmChange ( val ) {
+      this.$router.push({
+        query: {
+          page: 1,
+          viewNum: val
+        }
+      })
       this.viewNum = val
-      this.currentPage = 1
-
-      try {
-        await this.$store.dispatch({type:'getMembers', page:this.currentPage, viewNum:this.viewNum})
-      } catch( e ) {
-        console.log( e )
-      }
     },
 
-    async pagenationChange () {
-      try {
-        await this.$store.dispatch({type:'getMembers', page:this.currentPage, viewNum:this.viewNum})
-      } catch( e ) {
-        console.log( e )
-      }
+    pagenationChange ( val ) {
+      this.$router.push({
+        query: {
+          page: val,
+          viewNum: this.viewNum
+        }
+      })
+      this.page = val
     }
   }
 }
 </script>
 
 <style lang="scss">
-
 .memeber-page {
-  
+  padding-bottom:25px
+}
+.memeber-page {
   th { 
     background: #fff;
   }
+
+  .pagination{margin-top:20px}
 
   .custom-checkbox {
     position: relative;
