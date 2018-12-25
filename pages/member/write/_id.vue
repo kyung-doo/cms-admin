@@ -13,6 +13,7 @@
                 <b-form-input 
                   ref="userid" 
                   id="userid" 
+                  :value="form.userid"
                   :state="!$v.form.userid.$error"
                   @change.native="form.userid = $event.target.value; $v.form.userid.$touch()"
                   type="text">
@@ -30,7 +31,8 @@
               <div :class="{ 'form-group-error' : $v.form.email.$error || !$v.form.email.required }">
                 <b-form-input 
                   ref="email" 
-                  id="email" 
+                  id="email"
+                  :value="form.email" 
                   :state="!$v.form.email.$error"
                   @change.native="form.email = $event.target.value; $v.form.email.$touch()"
                   type="text">
@@ -344,11 +346,18 @@ export default {
   layout: 'default',
 
   async fetch ({ store, redirect, params }) {
+
     try {
       await store.dispatch({type:'cookieInit'})
       if(!store.state.auth) {
         redirect('/login')
+        return
       }
+      
+      if(params.id) {
+        await store.dispatch({type:'getMember', id:params.id})
+      }
+
     } catch( e ) {}
   },
 
@@ -360,6 +369,7 @@ export default {
     Datepicker
   },
 
+ 
   validations: {
     form: {
       userid: {
@@ -404,8 +414,8 @@ export default {
     return {
       baseUrl:'',
       form: {
-        userid: '',
-        email: '',
+        userid: this.$store.state.member ? this.$store.state.member.userid : '',
+        email: this.$store.state.member ? this.$store.state.member.email : '',
         password: '',
         username: '',
         nickname: '',

@@ -27,7 +27,10 @@ module.exports = {
   },
 
   router: {
-    base: '/admin/'
+    base: '/admin/',
+    middleware: [
+      'storeReset'
+    ],
   },
  
   /*
@@ -59,6 +62,8 @@ module.exports = {
     '@nuxtjs/style-resources',
     'bootstrap-vue/nuxt'
   ],
+
+  
 
   plugins: [
     '~/plugins/settings',

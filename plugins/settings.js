@@ -1,11 +1,7 @@
 import Vue from 'vue'
+import { SetDateFormat } from '~/plugins/utils'
 
-export const numberCheck = function ( e ) {
-    this.value = this.value.replace(/[^0-9]/g, '');
-    if (e.keyCode && (e.keyCode <= 47 || e.keyCode >= 58) && (e.keyCode <= 95 || e.keyCode >= 106) && e.keyCode != 8) { 
-        event.preventDefault(); 
-    }
-}
+
 
 export default ({ app, isDev }) => {
 
@@ -21,6 +17,29 @@ export default ({ app, isDev }) => {
         bind (el, binding) {
             el.addEventListener('keydown', numberCheck)
             el.addEventListener('keyup', numberCheck)
+        }
+    })
+    
+    const numberCheck = function ( e ) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (e.keyCode && (e.keyCode <= 47 || e.keyCode >= 58) && (e.keyCode <= 95 || e.keyCode >= 106) && e.keyCode != 8) { 
+            event.preventDefault(); 
+        }
+    }
+
+
+    // 날짜 포맷
+    SetDateFormat()
+    
+    Vue.filter('formatDate', function(value) {
+        if (value) {
+            return new Date(value).format('yyyy-MM-dd')
+        }
+    })
+
+    Vue.filter('formatDateTime', function(value) {
+        if (value) {
+            return new Date(value).format('MM-dd hh:mm')
         }
     })
     

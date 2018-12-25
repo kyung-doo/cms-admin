@@ -4,7 +4,7 @@ import { interopDefault } from './utils'
 
 const _8ac645b4 = () => interopDefault(import('..\\pages\\login.vue' /* webpackChunkName: "pages_login" */))
 const _3ac14a96 = () => interopDefault(import('..\\pages\\member\\index.vue' /* webpackChunkName: "pages_member_index" */))
-const _8223897c = () => interopDefault(import('..\\pages\\member\\write.vue' /* webpackChunkName: "pages_member_write" */))
+const _1c6e0d68 = () => interopDefault(import('..\\pages\\member\\write\\_id.vue' /* webpackChunkName: "pages_member_write__id" */))
 const _1e158be2 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 Vue.use(Router)
@@ -73,9 +73,9 @@ export function createRouter() {
       component: _3ac14a96,
       name: "member"
     }, {
-      path: "/member/write",
-      component: _8223897c,
-      name: "member-write"
+      path: "/member/write/:id?",
+      component: _1c6e0d68,
+      name: "member-write-id"
     }, {
       path: "/",
       component: _1e158be2,

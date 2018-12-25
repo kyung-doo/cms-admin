@@ -8,7 +8,8 @@ const createStore = () => {
       auth: null,
       admin: null,
       members: [],
-      membersCount:0
+      membersCount:0,
+      member: null
     },
 
     mutations: {
@@ -27,6 +28,16 @@ const createStore = () => {
 
       setMembers(state, members) {
         state.members = members
+      },
+
+      setMember(state, member) {
+        state.member = member
+      },
+
+      reset(state) {
+        state.members = []
+        state.member = null
+        state.membersCount = 0
       },
 
       logout(state) {
@@ -115,7 +126,7 @@ const createStore = () => {
           
           const res = await this.$axios({
             method: 'get',
-            url: '/api/admin/member/',
+            url: '/api/admin/member',
             params: {
               page: page,
               viewNum: viewNum
@@ -127,6 +138,31 @@ const createStore = () => {
           
           if(res.data.success) {
             commit('setMembers', res.data.body)
+          }
+          else {
+            this.$router.push('/login')
+          }
+        } catch( e ) {
+          console.log(e)
+        }
+      },
+
+      async getMember ({ commit }, { id }) {
+        try {
+          
+          const res = await this.$axios({
+            method: 'get',
+            url: '/api/admin/member',
+            params: {
+              id: id
+            },
+            headers: { 
+              'x-access-token': this.state.auth.accessToken 
+            }
+          })
+          
+          if(res.data.success) {
+            commit('setMember', res.data.body)
           }
           else {
             this.$router.push('/login')
