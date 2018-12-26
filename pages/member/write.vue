@@ -244,6 +244,7 @@
               :label-cols="2"
               :horizontal="true">
               <b-form-checkbox 
+                id="receive_email"
                 ref="receive_email" 
                 v-model="form.receive_email">
                 사용합니다
@@ -255,7 +256,8 @@
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
-              <b-form-checkbox 
+              <b-form-checkbox
+                id="use_note" 
                 ref="use_note" 
                 v-model="form.use_note">
                 사용합니다
@@ -268,6 +270,7 @@
               :label-cols="2"
               :horizontal="true">
               <b-form-checkbox 
+                id="receive_sms" 
                 ref="receive_sms" 
                 v-model="form.receive_sms">
                 사용합니다
@@ -280,6 +283,7 @@
               :label-cols="2"
               :horizontal="true">
               <b-form-checkbox 
+                id="open_profile"
                 ref="open_profile" 
                 v-model="form.open_profile">
                 사용합니다
@@ -345,7 +349,7 @@ export default {
 
   layout: 'default',
 
-  async fetch ({ store, redirect, params }) {
+  async fetch ({ store, redirect, query }) {
 
     try {
       await store.dispatch({type:'cookieInit'})
@@ -354,8 +358,8 @@ export default {
         return
       }
       
-      if(params.id) {
-        await store.dispatch({type:'getMember', id:params.id})
+      if(query.id) {
+        await store.dispatch({type:'getMember', id:query.id})
       }
 
     } catch( e ) {}

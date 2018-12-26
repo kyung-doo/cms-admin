@@ -52,9 +52,7 @@ export default {
 
 <style scoped>
     .list-view-num {
-        width: 250px;
-        float: left;
-        position: relative;
+        width: 250px
     }
     .list-view-num .custom-select {
         width: calc(100% - 100px);

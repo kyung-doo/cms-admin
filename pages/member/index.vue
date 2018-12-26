@@ -2,6 +2,38 @@
   <section class="">
     <div class="memeber-page">
 
+      <div class="overflow-hidden">
+
+        <div class="float-left">
+          
+        </div>
+
+        <div class="float-right">
+          <b-button-group>
+            <b-button 
+              @click="downloadExcel" 
+              variant="primary" 
+              type="button" >
+              엑셀 다운로드
+            </b-button>
+            <b-button 
+              @click="deleteMembers" 
+              type="button" 
+              variant="danger" 
+              :disabled="checkOne">
+              선택삭제
+            </b-button>
+            <b-button 
+              @click="$router.push('/member/write')" 
+              type="button" 
+              variant="success">
+              회원추가
+            </b-button>
+          </b-button-group>
+        </div>
+        
+      </div>
+
       <b-table 
         class="text-center" 
         responsive 
@@ -9,6 +41,13 @@
         hover 
         :fields="tableFields" 
         :items="members">
+
+        <template slot="HEAD_remove" slot-scope="data">
+          <b-form-checkbox 
+            id="check-all" 
+            v-model="checkAll" 
+            @click.native.stop />
+        </template>
         
         <template slot="index" slot-scope="data">
           {{ (membersCount - (viewNum * (page-1))) - data.index }}
@@ -27,10 +66,18 @@
         </template>
 
         <template slot="check_recive" slot-scope="data">
-          <b-form-checkbox :checked="data.item.open_profile" :disabled="true"></b-form-checkbox>
-          <b-form-checkbox :checked="data.item.receive_email" :disabled="true"></b-form-checkbox>
-          <b-form-checkbox :checked="data.item.use_note" :disabled="true"></b-form-checkbox>
-          <b-form-checkbox :checked="data.item.receive_sms" :disabled="true"></b-form-checkbox>
+          <b-form-checkbox 
+            :checked="data.item.open_profile" 
+            :disabled="true" />
+          <b-form-checkbox 
+            :checked="data.item.receive_email" 
+            :disabled="true" />
+          <b-form-checkbox 
+            :checked="data.item.use_note" 
+            :disabled="true" />
+          <b-form-checkbox 
+            :checked="data.item.receive_sms" 
+            :disabled="true" />
         </template>
 
         <template slot="denied" slot-scope="data">
@@ -38,11 +85,53 @@
         </template>
 
         <template slot="modify" slot-scope="data">
-          <b-button @click="$router.push('/member/write/'+data.item._id)" type="button" size="sm" variant="success">수정</b-button>
+          <b-button 
+            @click="$router.push({path:'/member/write', query: {id: data.item._id}})" 
+            type="button" 
+            size="sm" 
+            variant="success">
+            수정
+          </b-button>
+        </template>
+
+        <template slot="remove" slot-scope="data">
+          <b-form-checkbox 
+            :id="'check-' + data.index" 
+            v-model="checkMembers" 
+            :value="data.item._id" 
+            @click.native.stop />
         </template>
 
       </b-table>
-      
+
+      <div class="overflow-hidden">
+
+        <div class="float-left">
+          <ListViewNum
+            :selected="parseInt(viewNum)"
+            @change="listViewNmChange" />
+        </div>
+
+        <div class="float-right">
+          <b-button-group>
+            <b-button 
+              @click="deleteMembers" 
+              type="button" 
+              variant="danger" 
+              :disabled="checkOne">
+              선택삭제
+            </b-button>
+            <b-button 
+              @click="$router.push('/member/write')" 
+              type="button" 
+              variant="success">
+              회원추가
+            </b-button>
+          </b-button-group>
+        </div>
+
+      </div>
+
       <b-pagination 
         size="md" 
         align="center"
@@ -53,13 +142,7 @@
         :limit="10"
         @input="pagenationChange" />
 
-      <ListViewNum
-        :selected="parseInt(viewNum)"
-        @change="listViewNmChange" />
-
-      <div class="align-right">
-        <b-button @click="$router.push('/member/write')" type="button" variant="success">회원추가</b-button>
-      </div>
+      
 
     </div>
   </section>
@@ -69,7 +152,7 @@
 
 <script>
 import ListViewNum from '~/components/helper/ListViewNum'
-
+import XLSX from 'xlsx'
 
 export default {
   
@@ -105,8 +188,9 @@ export default {
     return {
       members: this.$store.state.members,
       membersCount: this.$store.state.membersCount,
-      page : this.$route.query.page|| 1,
-      viewNum : this.$route.query.viewNum || 10,
+      page: this.$route.query.page|| 1,
+      viewNum: this.$route.query.viewNum || 10,
+      checkMembers: [],
       tableFields: [
         { key: 'index', label: '번호' },
         { key: 'userid', label: '아이디' },
@@ -118,7 +202,8 @@ export default {
         { key: 'last_login_date', label: '최근로그인' },
         { key: 'check_recive', label: '공개/메일/쪽지/문자' },
         { key: 'denied', label: '승인' },
-        { key: 'modify', label: '수정' }
+        { key: 'modify', label: '수정' },
+        { key: 'remove', label: '' }
       ]
     }
   },
@@ -132,8 +217,6 @@ export default {
           viewNum: val
         }
       })
-      this.page = 1
-      this.viewNum = val
     },
 
     pagenationChange ( val ) {
@@ -143,7 +226,84 @@ export default {
           viewNum: this.viewNum
         }
       })
-      this.page = val
+    },
+
+    async deleteMembers () {
+      if(this.checkMembers.length > 0) {
+
+        try {
+          const res = await this.$axios({
+              method: 'post',
+              url: '/api/admin/member/delete',
+              data: {
+                ids: this.checkMembers
+              },
+              headers: { 
+                'x-access-token': this.$store.state.auth.accessToken
+              }
+          })
+          
+          if(res.data.success) {
+            alert('선택하신 회원을 삭제 하였습니다.')
+            this.$router.go()
+          }
+          else {
+            alert(res.data.error.message)
+            if(res.data.error.code == 403)
+            {
+              this.$store.dispatch('logout').then(() => {
+                  this.$router.push('/login')
+              })
+            }
+          }
+        } catch(e) {
+          console.log(e)
+          return
+        }
+        
+      }
+    },
+
+    downloadExcel () {
+      let exelData = []
+      this.members.forEach(( member, i ) => {
+        exelData.push({
+          "아이디": member.userid,
+          "이름": member.username,
+          "닉네임": member.nickname,
+          "이메일": member.email,
+          "포인트": member.point,
+          "가입일": new Date( member.register_datetime ).format('yyyy-MM-dd'),
+          "최근로그인": member.last_login_date ? new Date( member.last_login_date ).format('yyyy-MM-dd hh:mm:ss') : ''
+        })
+      });
+      var memberWS = XLSX.utils.json_to_sheet(exelData)
+      var wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, memberWS, '회원 정보')
+      XLSX.writeFile(wb, '회원정보-'+new Date().format('yyyy-MM-dd')+'.xlsx')
+    }
+  },
+
+  computed: {
+    checkAll: {
+      get: function () {
+          return this.members ? this.checkMembers.length == this.members.length : false;
+      },
+      set: function (value) {
+          var checked = [];
+
+          if (value) {
+              this.members.forEach(function (member) {
+                  checked.push(member._id);
+              });
+          }
+
+          this.checkMembers = checked;
+      }
+    },
+
+    checkOne: function () {
+      return this.checkMembers.length > 0 ? false : true
     }
   }
 }
@@ -170,6 +330,12 @@ export default {
   }
   table {
     min-width:900px;
+    margin-top:25px;
+  }
+
+  .btn-group {
+    border-radius: 5px;
+    overflow: hidden;
   }
 }
 
