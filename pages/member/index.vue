@@ -2,137 +2,139 @@
   <section class="">
     <div class="memeber-page">
 
-      <div class="overflow-hidden">
+      <b-card>
 
-        <div class="float-left">
+        <div class="overflow-hidden">
+
+          <div class="float-left">
+            
+          </div>
+
+          <div class="float-right">
+            <b-button-group>
+              <b-button 
+                @click="downloadExcel" 
+                variant="primary" 
+                type="button" >
+                <i class="fas fa-file-excel"></i> 엑셀 다운로드
+              </b-button>
+              <b-button 
+                @click="deleteMembers" 
+                type="button" 
+                variant="danger" 
+                :disabled="checkOne">
+                선택삭제
+              </b-button>
+              <b-button 
+                @click="$router.push('/member/write')" 
+                type="button" 
+                variant="success">
+                회원추가
+              </b-button>
+            </b-button-group>
+          </div>
           
         </div>
 
-        <div class="float-right">
-          <b-button-group>
+        <b-table 
+          class="text-center" 
+          responsive 
+          striped 
+          hover 
+          :fields="tableFields" 
+          :items="members">
+
+          <template slot="HEAD_remove" slot-scope="data">
+            <b-form-checkbox 
+              id="check-all" 
+              v-model="checkAll" 
+              @click.native.stop />
+          </template>
+          
+          <template slot="index" slot-scope="data">
+            {{ (membersCount - (viewNum * (page-1))) - data.index }}
+          </template>
+
+          <template slot="userid" slot-scope="data">
+            {{data.item.userid}} <b-badge v-if="data.item.level == 1">관리자</b-badge> <b-badge v-if="data.item.level == 2">최고 관리자</b-badge>
+          </template>
+
+          <template slot="register_datetime" slot-scope="data">
+            {{ data.item.register_datetime | formatDate }}
+          </template>
+
+          <template slot="last_login_date" slot-scope="data">
+            {{data.item.last_login_date | formatDateTime}}
+          </template>
+
+          <template slot="check_recive" slot-scope="data">
+            <b-form-checkbox 
+              :checked="data.item.open_profile" 
+              :disabled="true" />
+            <b-form-checkbox 
+              :checked="data.item.receive_email" 
+              :disabled="true" />
+            <b-form-checkbox 
+              :checked="data.item.use_note" 
+              :disabled="true" />
+            <b-form-checkbox 
+              :checked="data.item.receive_sms" 
+              :disabled="true" />
+          </template>
+
+          <template slot="denied" slot-scope="data">
+            {{data.item.denied ? '차단' : '승인'}}
+          </template>
+
+          <template slot="modify" slot-scope="data">
             <b-button 
-              @click="downloadExcel" 
-              variant="primary" 
-              type="button" >
-              엑셀 다운로드
-            </b-button>
-            <b-button 
-              @click="deleteMembers" 
+              @click="$router.push({path:'/member/write', query: {id: data.item._id}})" 
               type="button" 
-              variant="danger" 
-              :disabled="checkOne">
-              선택삭제
-            </b-button>
-            <b-button 
-              @click="$router.push('/member/write')" 
-              type="button" 
+              size="sm" 
               variant="success">
-              회원추가
+              수정
             </b-button>
-          </b-button-group>
-        </div>
-        
-      </div>
+          </template>
 
-      <b-table 
-        class="text-center" 
-        responsive 
-        striped 
-        hover 
-        :fields="tableFields" 
-        :items="members">
+          <template slot="remove" slot-scope="data">
+            <b-form-checkbox 
+              :id="'check-' + data.index" 
+              v-model="checkMembers" 
+              :value="data.item._id" 
+              @click.native.stop />
+          </template>
 
-        <template slot="HEAD_remove" slot-scope="data">
-          <b-form-checkbox 
-            id="check-all" 
-            v-model="checkAll" 
-            @click.native.stop />
-        </template>
-        
-        <template slot="index" slot-scope="data">
-          {{ (membersCount - (viewNum * (page-1))) - data.index }}
-        </template>
+        </b-table>
 
-         <template slot="userid" slot-scope="data">
-          {{data.item.userid}} <b-badge v-if="data.item.level == 1">관리자</b-badge> <b-badge v-if="data.item.level == 2">최고 관리자</b-badge>
-        </template>
+        <div class="overflow-hidden">
 
-        <template slot="register_datetime" slot-scope="data">
-          {{ data.item.register_datetime | formatDate }}
-        </template>
+          <div class="float-left">
+            <ListViewNum
+              :selected="parseInt(viewNum)"
+              @change="listViewNmChange" />
+          </div>
 
-        <template slot="last_login_date" slot-scope="data">
-          {{data.item.last_login_date | formatDateTime}}
-        </template>
+          <div class="float-right">
+            <b-button-group>
+              <b-button 
+                @click="deleteMembers" 
+                type="button" 
+                variant="danger" 
+                :disabled="checkOne">
+                선택삭제
+              </b-button>
+              <b-button 
+                @click="$router.push('/member/write')" 
+                type="button" 
+                variant="success">
+                회원추가
+              </b-button>
+            </b-button-group>
+          </div>
 
-        <template slot="check_recive" slot-scope="data">
-          <b-form-checkbox 
-            :checked="data.item.open_profile" 
-            :disabled="true" />
-          <b-form-checkbox 
-            :checked="data.item.receive_email" 
-            :disabled="true" />
-          <b-form-checkbox 
-            :checked="data.item.use_note" 
-            :disabled="true" />
-          <b-form-checkbox 
-            :checked="data.item.receive_sms" 
-            :disabled="true" />
-        </template>
-
-        <template slot="denied" slot-scope="data">
-          {{data.item.denied ? '차단' : '승인'}}
-        </template>
-
-        <template slot="modify" slot-scope="data">
-          <b-button 
-            @click="$router.push({path:'/member/write', query: {id: data.item._id}})" 
-            type="button" 
-            size="sm" 
-            variant="success">
-            수정
-          </b-button>
-        </template>
-
-        <template slot="remove" slot-scope="data">
-          <b-form-checkbox 
-            :id="'check-' + data.index" 
-            v-model="checkMembers" 
-            :value="data.item._id" 
-            @click.native.stop />
-        </template>
-
-      </b-table>
-
-      <div class="overflow-hidden">
-
-        <div class="float-left">
-          <ListViewNum
-            :selected="parseInt(viewNum)"
-            @change="listViewNmChange" />
         </div>
 
-        <div class="float-right">
-          <b-button-group>
-            <b-button 
-              @click="deleteMembers" 
-              type="button" 
-              variant="danger" 
-              :disabled="checkOne">
-              선택삭제
-            </b-button>
-            <b-button 
-              @click="$router.push('/member/write')" 
-              type="button" 
-              variant="success">
-              회원추가
-            </b-button>
-          </b-button-group>
-        </div>
-
-      </div>
-
-      <b-pagination 
+        <b-pagination 
         size="md" 
         align="center"
         :total-rows="membersCount"  
@@ -140,9 +142,13 @@
         :hide-ellipsis=true
         :value="parseInt(page)"
         :limit="10"
+        prev-text="<i class='fas fa-angle-left'></i>"
+        next-text="<i class='fas fa-angle-right'></i>"
+        first-text="<i class='fas fa-angle-double-left'></i>"
+        last-text="<i class='fas fa-angle-double-right'></i>"
         @input="pagenationChange" />
 
-      
+      </b-card>
 
     </div>
   </section>
@@ -254,6 +260,9 @@ export default {
               this.$store.dispatch('logout').then(() => {
                   this.$router.push('/login')
               })
+            }
+            else {
+              this.$router.go()
             }
           }
         } catch(e) {

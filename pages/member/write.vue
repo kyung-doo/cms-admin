@@ -43,7 +43,7 @@
             </b-form-group>
 
             <b-form-group
-              label="<span>*</span> 패스워드"
+              :label="this.$store.state.member ? '패스워드' : '<span>*</span> 패스워드'"
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
@@ -70,6 +70,7 @@
                   ref="username" 
                   id="username" 
                   :state="!$v.form.username.$error"
+                  :value="form.username" 
                   @change.native="form.username = $event.target.value; $v.form.username.$touch()"
                   type="text">
                 </b-form-input>
@@ -129,6 +130,7 @@
                   @change.native="form.phone2 = $event.target.value; $v.form.phone2.$touch()"
                   type="text" 
                   maxlength="4" 
+                  :value="form.phone2"
                   v-numberOnly>
                 </b-form-input> - 
                 <b-form-input 
@@ -137,7 +139,8 @@
                   :state="!$v.form.phone3.$error"
                   @change.native="form.phone3 = $event.target.value; $v.form.phone3.$touch()"
                   type="text" 
-                  maxlength="4" 
+                  maxlength="4"
+                  :value="form.phone3" 
                   v-numberOnly>
                 </b-form-input>
                 <div class="error" v-if="($v.form.phone2.$error && (!$v.form.phone2.required || !$v.form.phone2.minLength)) || ($v.form.phone3.$error && (!$v.form.phone3.required || !$v.form.phone3.minLength))">연락처를 입력하세요.</div>
@@ -187,6 +190,7 @@
                 <b-form-input 
                   ref="address2" 
                   id="address2" 
+                  :value="form.address2"
                   :state="!$v.form.address2.$error"
                   @change.native="form.address2 = $event.target.value; $v.form.address2.$touch()"
                   type="text">
@@ -201,7 +205,12 @@
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
-              <b-form-input ref="homepage" id="homepage" v-model="form.homepage" type="text"></b-form-input>
+              <b-form-input 
+                ref="homepage" 
+                id="homepage" 
+                v-model="form.homepage" 
+                type="text">
+              </b-form-input>
             </b-form-group>
 
             <b-form-group
@@ -209,7 +218,11 @@
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
-              <b-form-select ref="level" v-model="form.level" :options="levelOption" />
+              <b-form-select 
+                ref="level" 
+                v-model="form.level" 
+                :options="levelOption">
+              </b-form-select>
             </b-form-group>
 
             <b-form-group
@@ -217,7 +230,12 @@
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
-              <b-form-input ref="point" v-model="form.point" type="number" />
+              <b-form-input 
+                ref="point" 
+                v-model="form.point" 
+                min="0"
+                type="number">
+              </b-form-input>
             </b-form-group>
 
             <b-form-group
@@ -225,6 +243,13 @@
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
+
+              <img 
+                v-if="form.photo" 
+                :src="$uploadUrl+form.photo"
+                width=80
+                height=80
+                style="margin-bottom:10px;border:solid 1px #c2cfd6" />
 
               <b-form-file 
                 id="photo"
@@ -381,7 +406,10 @@ export default {
         minLength: minLength(4)
       },
       password: {
-        required,
+        required ( value ) {
+          if(this.$store.state.member) return true;
+          return value
+        },
         minLength: minLength(4)
       },
       email: {
@@ -421,26 +449,26 @@ export default {
         userid: this.$store.state.member ? this.$store.state.member.userid : '',
         email: this.$store.state.member ? this.$store.state.member.email : '',
         password: '',
-        username: '',
-        nickname: '',
-        address1: '',
-        address2:'',
-        level: 0,
-        phone1:'010',
-        phone2: '',
-        phone3: '',
-        zipcode: '',
-        homepage: '',
-        birthday: null,
-        point: 0,
-        photo: '',
-        receive_email: true,
-        use_note: true,
-        receive_sms:true,
-        open_profile: true,
-        denied:false,
-        profile_content:'',
-        admin_memo:'',
+        username: this.$store.state.member ? this.$store.state.member.username : '',
+        nickname: this.$store.state.member ? this.$store.state.member.nickname : '',
+        address1: this.$store.state.member ? this.$store.state.member.address[0] : '',
+        address2: this.$store.state.member ? this.$store.state.member.address[1] : '',
+        level: this.$store.state.member ? this.$store.state.member.level : 0,
+        phone1: this.$store.state.member ? StringUtils.slicePhoneNumber(this.$store.state.member.phone, 0) : '010',
+        phone2: this.$store.state.member ? StringUtils.slicePhoneNumber(this.$store.state.member.phone, 1) : '',
+        phone3: this.$store.state.member ? StringUtils.slicePhoneNumber(this.$store.state.member.phone, 2) : '',
+        zipcode: this.$store.state.member ? this.$store.state.member.zipcode : '',
+        homepage: this.$store.state.member ? this.$store.state.member.homepage : '',
+        birthday: this.$store.state.member ? this.$store.state.member.birthday : null,
+        point: this.$store.state.member ? this.$store.state.member.point : 0,
+        photo: this.$store.state.member ? this.$store.state.member.photo : '',
+        receive_email: this.$store.state.member ? this.$store.state.member.receive_email : true,
+        use_note: this.$store.state.member ? this.$store.state.member.use_note : true,
+        receive_sms: this.$store.state.member ? this.$store.state.member.receive_sms : true,
+        open_profile: this.$store.state.member ? this.$store.state.member.open_profile : true,
+        denied: this.$store.state.member ? this.$store.state.member.denied : false,
+        profile_content: this.$store.state.member ? this.$store.state.member.profile_content : '',
+        admin_memo: this.$store.state.member ? this.$store.state.member.admin_memo : '',
         file: null
       },
 
@@ -451,7 +479,11 @@ export default {
 
       phoneOption: [
         { value: '010', text: '010', selected: true },
-        { value: '011', text: '011' }
+        { value: '011', text: '011' },
+        { value: '016', text: '016' },
+        { value: '017', text: '017' },
+        { value: '018', text: '018' },
+        { value: '019', text: '019' }
       ],
 
       deniedOption: [
@@ -466,7 +498,6 @@ export default {
   },
 
   methods: {
-
     async onSubmit ( e ) {
       e.preventDefault()
       this.$v.$touch()
@@ -475,21 +506,23 @@ export default {
 
         const data = ObjectUtils.clone(this.form)
 
-        try {
-          const res = await this.checkOverap( data.userid, data.email )
-          if(res.data.error) {
-            alert(res.data.error.message)
-            if(res.data.error.code == 403)
-            {
-              this.$store.dispatch('logout').then(() => {
-                  this.$router.push('/login')
-              })
+        if(!this.$store.state.member) {
+          try {
+            const res = await this.checkOverap( data.userid, data.email )
+            if(res.data.error) {
+              alert(res.data.error.message)
+              if(res.data.error.code == 403)
+              {
+                this.$store.dispatch('logout').then(() => {
+                    this.$router.push('/login')
+                })
+              }
+              return
             }
+          } catch ( e ) {
+            console.log(e)
             return
           }
-        } catch ( e ) {
-          console.log(e)
-          return
         }
 
         let photo = ''
@@ -514,18 +547,36 @@ export default {
         }
 
         try {
+          let res;
+          if(!this.$store.state.member) {
+            res = await this.$axios({
+                method: 'post',
+                url: '/api/admin/member/write',
+                data: data,
+                headers: { 
+                  'x-access-token': this.$store.state.auth.accessToken
+                }
+            })
+          } else {
+            res = await this.$axios({
+                method: 'post',
+                url: '/api/admin/member/update',
+                data: data,
+                params: {
+                  id:this.$store.state.member._id
+                },
+                headers: { 
+                  'x-access-token': this.$store.state.auth.accessToken
+                }
+            })
+          }
 
-          const res = await this.$axios({
-              method: 'post',
-              url: '/api/admin/member/write',
-              data: data,
-              headers: { 
-                'x-access-token': this.$store.state.auth.accessToken
-              }
-          })
-          
           if(res.data.success) {
-            alert('회원 가입 성공.')
+            if(!this.$store.state.member) {
+              alert('회원 가입 성공.')
+            } else {
+              alert('회원 수정 성공.')
+            }
             this.$router.push('/member')
           }
           else {
@@ -549,7 +600,7 @@ export default {
           {
             invalid[0].focus()
           }
-        },)
+        })
       }
     },
 

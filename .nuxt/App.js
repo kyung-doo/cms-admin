@@ -7,6 +7,8 @@ import '..\\node_modules\\flag-icon-css\\css\\flag-icon.min.css'
 
 import '..\\node_modules\\font-awesome\\css\\font-awesome.min.css'
 
+import '..\\node_modules\\@fortawesome\\fontawesome-free\\css\\all.min.css'
+
 import '..\\node_modules\\simple-line-icons\\css\\simple-line-icons.css'
 
 import '..\\node_modules\\bootstrap-vue\\dist\\bootstrap-vue.css'

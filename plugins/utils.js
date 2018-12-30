@@ -38,6 +38,10 @@ class StringUtils {
     static parsePhoneNumber ( phones ) {
         return phones[0]+"-"+phones[1]+"-"+phones[2]
     }
+
+    static slicePhoneNumber ( phones, num) {
+        return String(phones.split('-')[num])
+    }
 }
 
 

@@ -46,6 +46,8 @@ module.exports = {
     '~/node_modules/flag-icon-css/css/flag-icon.min.css',
     /* Import Font Awesome Icons Set */
     '~/node_modules/font-awesome/css/font-awesome.min.css',
+    /* Import Font Awesome Icons Set */
+    '~/node_modules/@fortawesome/fontawesome-free/css/all.min.css',
     /* Import Simple Line Icons Set */
     '~/node_modules/simple-line-icons/css/simple-line-icons.css',
     /* Import Bootstrap Vue Styles */

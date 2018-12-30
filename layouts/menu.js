@@ -1,13 +1,17 @@
 export default {
   items: [
     {
-      name: '회원설정',
+      name: '회원 설정',
       url: '/member',
       icon: 'icon-people',
       children: [
         {
-          name: '회원관리',
+          name: '회원 관리',
           url: '/member'
+        },
+        {
+          name: '회원 그룹 관리',
+          url: '/member/group'
         }
       ]
     }
