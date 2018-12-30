@@ -2,46 +2,66 @@
   <section class="">
     <div class="memeber-group-page">
       <b-card>
-        <div class="overflow-hidden">
-          
-          <div class="float-right">
-            <b-button-group>
-              <b-button 
-                type="button" 
-                variant="success">
-                저장하기
-              </b-button>
-            </b-button-group>
+        <b-form @submit="onSubmit">
+          <div class="overflow-hidden">
+            
+            <div class="float-right">
+              <b-button-group>
+                <b-button 
+                  type="submit" 
+                  variant="success">
+                  저장하기
+                </b-button>
+              </b-button-group>
+            </div>
           </div>
-        </div>
 
-        <div class="title-line"></div>
+          <div class="title-line"></div>
 
-        <p>2개의 그룹이 존재합니다</p>
+          <p>0개의 그룹이 존재합니다</p>
 
-        <b-container class="list-con">
-          <b-row class="list-title">
-              <b-col>순서변경</b-col>
-              <b-col>그룹명</b-col>
-              <b-col>설명</b-col>
-              <b-col>기본 그룹</b-col>
-              <b-col>회원수</b-col>
-              <b-col>
-                <b-button size="sm" variant="primary" @click="addGroups">추가</b-button>
-              </b-col>
-          </b-row>
-          <b-row class="list" v-for="group in groupList" :key="group.title">
-              <b-col>test</b-col>
-              <b-col>test</b-col>
-              <b-col>test</b-col>
-              <b-col>test</b-col>
-              <b-col>test</b-col>
-              <b-col>
-                <b-button size="sm" variant="danger">삭제</b-button>
-              </b-col>
-          </b-row>
-        </b-container>
+          <b-container class="list-con">
+            <b-row class="list-title">
+                <b-col>순서변경</b-col>
+                <b-col cols="3">그룹명</b-col>
+                <b-col cols="5">설명</b-col>
+                <b-col>회원수</b-col>
+                <b-col>
+                  <b-button size="sm" variant="primary" @click="addGroups">추가</b-button>
+                </b-col>
+            </b-row>
 
+            <draggable 
+              v-model="groupList"
+              :options="{handle:'.move-btn', invertSwap:true, animation:150}"
+              @end="changeDraggable">
+              <transition-group>
+                  <b-row class="list" v-for="(group, i) in groupList" :key="i">
+                    <b-col>
+                      <a class="move-btn"><i class="fas fa-arrows-alt"></i></a>
+                    </b-col>
+                    <b-col cols="3">
+                      <b-form-input 
+                        v-model="group.title" 
+                        type="text">
+                      </b-form-input>
+                    </b-col>
+                    <b-col cols="5">
+                      <b-form-input 
+                        v-model="group.description" 
+                        type="text">
+                      </b-form-input>
+                    </b-col>
+                    <b-col>0</b-col>
+                    <b-col>
+                      <b-button size="sm" variant="danger" @click="removeGroups(i)">삭제</b-button>
+                    </b-col>
+                </b-row>
+              </transition-group>
+            </draggable>
+
+          </b-container>
+        </b-form>
       </b-card>
     </div>
   </section>
@@ -50,7 +70,7 @@
 
 
 <script>
-
+import draggable from 'vuedraggable'
 
 export default {
   
@@ -66,15 +86,21 @@ export default {
         return 
       }
 
+      await store.dispatch({type:'getMemberGroups'})
+
     } 
     catch ( e ){
       console.log( e )
     } 
   },
 
+  components: {
+    draggable
+  },
+
   data () {
     return {
-      groupList: []
+      groupList: this.$store.state.memberGroups
     }
   },
 
@@ -84,11 +110,47 @@ export default {
       this.groupList.push(
         {
           title: '',
-          isDefault: false,
           order: this.groupList.length,
           description: ''
         }
       )
+    },
+
+    removeGroups ( idx ) {
+      this.groupList.splice(idx, 1)
+      for(let i=0; i < this.groupList.length; i++) {
+        this.groupList[i].order = i
+      }
+    },
+
+    changeDraggable () {
+     for(let i=0; i < this.groupList.length; i++) {
+        this.groupList[i].order = i
+      }
+    },
+
+    async onSubmit ( e ) {
+      e.preventDefault();
+      try {
+        const res = await this.$axios({
+          method: 'post',
+          url: '/api/admin/member/group/write',
+          data: this.groupList,
+          headers: { 
+            'x-access-token': this.$store.state.auth.accessToken
+          }
+        })
+        if(res.data.success) {
+          alert('회원 그룹 저장.')
+        }
+        else {
+          alert('회원 그룹 저장 실패.')
+        }
+        this.$router.go()
+      } catch( e ) {
+        console.log( e );
+      }
+
     }
   }
 }
@@ -119,9 +181,20 @@ export default {
     .container .list{
       border-top:solid 1px $lineColor;
     }
-    .container .row .col {
+    .container .row > div {
       padding:15px;
+      text-align: center;
+    }
+    
+    .sortable-ghost {
+      background:rgb(242,242,242);
+    }
+
+    .move-btn {
+      font-size:22px;
+      cursor:move;
     }
   }
+  
 </style>
 

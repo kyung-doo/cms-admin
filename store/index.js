@@ -9,7 +9,8 @@ const createStore = () => {
       admin: null,
       members: [],
       membersCount:0,
-      member: null
+      member: null,
+      memberGroups: []
     },
 
     mutations: {
@@ -34,16 +35,21 @@ const createStore = () => {
         state.member = member
       },
 
-      reset(state) {
-        state.members = []
-        state.member = null
-        state.membersCount = 0
+      setMemberGroups(state, memberGroups) {
+        state.memberGroups = memberGroups
       },
 
       logout(state) {
         state.auth = null
         state.admin = null
       },
+
+      reset(state) {
+        state.members = []
+        state.member = null
+        state.membersCount = 0
+        state.memberGroups = []
+      }
     },
 
     actions: {
@@ -163,6 +169,28 @@ const createStore = () => {
           
           if(res.data.success) {
             commit('setMember', res.data.body)
+          }
+          else {
+            this.$router.push('/login')
+          }
+        } catch( e ) {
+          console.log(e)
+        }
+      },
+
+      async getMemberGroups ({ commit }) {
+        try {
+          
+          const res = await this.$axios({
+            method: 'get',
+            url: '/api/admin/member/group',
+            headers: { 
+              'x-access-token': this.state.auth.accessToken 
+            }
+          })
+          
+          if(res.data.success) {
+            commit('setMemberGroups', res.data.body)
           }
           else {
             this.$router.push('/login')
