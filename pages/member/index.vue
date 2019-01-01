@@ -296,18 +296,18 @@ export default {
   computed: {
     checkAll: {
       get: function () {
-          return this.members ? this.checkMembers.length == this.members.length : false;
+        return this.members ? this.checkMembers.length == this.members.length : false;
       },
       set: function (value) {
-          var checked = [];
+        var checked = [];
 
-          if (value) {
-              this.members.forEach(function (member) {
-                  checked.push(member._id);
-              });
-          }
+        if (value) {
+            this.members.forEach(function (member) {
+                checked.push(member._id);
+            });
+        }
 
-          this.checkMembers = checked;
+        this.checkMembers = checked;
       }
     },
 

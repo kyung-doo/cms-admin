@@ -79,16 +79,18 @@
             </b-form-group>
 
             <b-form-group
-              label="닉네임"
+              label="회원 그룹"
               label-class="form-label text-right"
               :label-cols="2"
               :horizontal="true">
-              <b-form-input 
-                ref="nickname" 
-                id="nickname" 
-                v-model="form.nickname" 
-                type="text">
-              </b-form-input>
+              <b-form-checkbox
+                v-for="(group, i) in groupList"
+                v-model="form.groups"
+                :value="group._id"
+                :key="group._id"
+                :id="'gorup_chk_'+i">
+                {{ group.title }}
+              </b-form-checkbox>
             </b-form-group>
 
             <b-form-group
@@ -382,6 +384,8 @@ export default {
         redirect('/login')
         return
       }
+
+      await store.dispatch({type:'getMemberGroups'})
       
       if(query.id) {
         await store.dispatch({type:'getMember', id:query.id})
@@ -469,8 +473,11 @@ export default {
         denied: this.$store.state.member ? this.$store.state.member.denied : false,
         profile_content: this.$store.state.member ? this.$store.state.member.profile_content : '',
         admin_memo: this.$store.state.member ? this.$store.state.member.admin_memo : '',
-        file: null
+        file: null,
+        groups: this.$store.state.member ? this.$store.state.member.groups : []
       },
+
+      groupList: this.$store.state.memberGroups,
 
       levelOption: [
         { value: 0, text: '일반 회원', selected: true },
@@ -496,6 +503,8 @@ export default {
       ko: ko
     }
   },
+
+  
 
   methods: {
     async onSubmit ( e ) {

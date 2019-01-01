@@ -41,10 +41,14 @@
                       <a class="move-btn"><i class="fas fa-arrows-alt"></i></a>
                     </b-col>
                     <b-col cols="3">
-                      <b-form-input 
-                        v-model="group.title" 
-                        type="text">
-                      </b-form-input>
+                      <div :class="{ 'form-group-error' : $v.groupList.$each[i].title.$error || !$v.groupList.$each[i].title.required}">
+                        <b-form-input
+                          :state="!$v.groupList.$each[i].title.$error"
+                          v-model="groupList[i].title"
+                          type="text">
+                        </b-form-input>
+                        <div class="error" v-if="$v.groupList.$each[i].title.$error && !$v.groupList.$each[i].title.required">그룹명을 입력하세요.</div>
+                      </div>
                     </b-col>
                     <b-col cols="5">
                       <b-form-input 
@@ -52,7 +56,7 @@
                         type="text">
                       </b-form-input>
                     </b-col>
-                    <b-col>0</b-col>
+                    <b-col>{{ groupList[i].count }}</b-col>
                     <b-col>
                       <b-button size="sm" variant="danger" @click="removeGroups(i)">삭제</b-button>
                     </b-col>
@@ -71,6 +75,8 @@
 
 <script>
 import draggable from 'vuedraggable'
+import { validationMixin } from 'vuelidate'
+import { required, minLength, maxLength, between, sameAs, integer, email } from 'vuelidate/lib/validators'
 
 export default {
   
@@ -94,6 +100,10 @@ export default {
     } 
   },
 
+  mixins: [
+    validationMixin
+  ],
+
   components: {
     draggable
   },
@@ -101,6 +111,16 @@ export default {
   data () {
     return {
       groupList: this.$store.state.memberGroups
+    }
+  },
+
+  validations: {
+    groupList: {
+      $each: {
+        title: {
+          required
+        }
+      }
     }
   },
 
@@ -131,26 +151,38 @@ export default {
 
     async onSubmit ( e ) {
       e.preventDefault();
-      try {
-        const res = await this.$axios({
-          method: 'post',
-          url: '/api/admin/member/group/write',
-          data: this.groupList,
-          headers: { 
-            'x-access-token': this.$store.state.auth.accessToken
+       this.$v.$touch()
+      
+      if (!this.$v.$invalid) {
+        try {
+          const res = await this.$axios({
+            method: 'post',
+            url: '/api/admin/member/group/write',
+            data: this.groupList,
+            headers: { 
+              'x-access-token': this.$store.state.auth.accessToken
+            }
+          })
+          if(res.data.success) {
+            alert('회원 그룹 저장.')
+          }
+          else {
+            alert('회원 그룹 저장 실패.')
+          }
+          this.$router.go()
+        } catch( e ) {
+          console.log( e );
+        }
+      }
+      else {
+        setTimeout(() => {
+          const invalid = this.$el.querySelectorAll('.is-invalid')
+          if(invalid.length > 0)
+          {
+            invalid[0].focus()
           }
         })
-        if(res.data.success) {
-          alert('회원 그룹 저장.')
-        }
-        else {
-          alert('회원 그룹 저장 실패.')
-        }
-        this.$router.go()
-      } catch( e ) {
-        console.log( e );
       }
-
     }
   }
 }
@@ -193,6 +225,14 @@ export default {
     .move-btn {
       font-size:22px;
       cursor:move;
+    }
+    .form-group-error .error {
+      display: block;
+      text-align: left;
+    }
+
+    .form-control.is-valid{
+      border-color:#c2cfd6 !important;
     }
   }
   
