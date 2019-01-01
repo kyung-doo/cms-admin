@@ -67,6 +67,12 @@
             {{data.item.last_login_date | formatDateTime}}
           </template>
 
+          <template slot="groups" slot-scope="data">
+            <span v-for="(group, i) in data.item.groups" :key="i">
+              {{ (data.item.groups.length-1 > i ) ? group.title+', ' : group.title }}
+            </span>
+          </template>
+
           <template slot="check_recive" slot-scope="data">
             <b-form-checkbox 
               :checked="data.item.open_profile" 
@@ -206,6 +212,7 @@ export default {
         { key: 'point', label: '포인트' },
         { key: 'register_datetime', label: '가입일' },
         { key: 'last_login_date', label: '최근로그인' },
+        { key: 'groups', label: '회원 그룹' },
         { key: 'check_recive', label: '공개/메일/쪽지/문자' },
         { key: 'denied', label: '승인' },
         { key: 'modify', label: '수정' },
